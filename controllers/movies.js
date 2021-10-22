@@ -5,6 +5,12 @@ const NotFoundError = require('../middlewares/errors/NotFoundError');
 const BadRequest = require('../middlewares/errors/BadRequest');
 const Forbidden = require('../middlewares/errors/Forbidden');
 
+const {
+  BAD_REQUEST,
+  NOT_FOUND,
+  FORBIDDEN_MOVIE,
+} = require('../utils/constants');
+
 module.exports.getMovies = (req, res, next) => {
   const owner = req.user._id;
 
@@ -13,7 +19,7 @@ module.exports.getMovies = (req, res, next) => {
       res.status(200).send(cards);
     })
     .catch(() => {
-      throw new NotFoundError('Нет карточек с таким id');
+      throw new NotFoundError(NOT_FOUND);
     })
     .catch(next);
 };
@@ -52,15 +58,20 @@ module.exports.createMovie = (req, res, next) => {
     .then((data) => {
       res.send(data);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequest(BAD_REQUEST));
+      }
+      next(err);
+    });
 };
 
 module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.id)
     .then((movie) => {
       if (!movie) {
-        next(new NotFoundError('Нет карточки с таким id'));
-      } else if (movie.owner === req.user._id) {
+        next(new NotFoundError(NOT_FOUND));
+      } else if (movie.owner.toString() === req.user._id) {
         Movie.findByIdAndDelete(movie._id)
           .then((del) => {
             if (del) {
@@ -69,12 +80,12 @@ module.exports.deleteMovie = (req, res, next) => {
             }
           });
       } else {
-        next(new Forbidden('Можно удалять только свои карточки'));
+        next(new Forbidden(FORBIDDEN_MOVIE));
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequest('Переданы некорректные данные при удалении карточки.'));
+        next(new BadRequest(BAD_REQUEST));
       }
       next(err);
     });

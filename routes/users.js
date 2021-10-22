@@ -1,19 +1,18 @@
 const router = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
+
+const {
+  validateId,
+  validatePatchInfoUser,
+} = require('../middlewares/validation');
 
 const {
   getInfoUser, patchInfoUser,
 } = require('../controllers/users');
 
 // eslint-disable-next-line no-undef
-router.get('/me', getInfoUser);
+router.get('/me', validateId, getInfoUser);
 
 // eslint-disable-next-line no-undef
-router.patch('/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    email: Joi.string().email().required(),
-  }),
-}), patchInfoUser);
+router.patch('/me', validatePatchInfoUser, patchInfoUser);
 
 module.exports = router;
