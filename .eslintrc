@@ -1,0 +1,8 @@
+{
+  "extends": "airbnb-base"
+
+}
+
+  // eslint-disable-next-line no-underscore-dangle
+  // eslint-disable-next-line no-console
+
