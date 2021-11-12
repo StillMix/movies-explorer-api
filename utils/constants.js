@@ -4,11 +4,11 @@ const FORBIDDEN_MOVIE = 'Можно удалять только свои кар�
 const CONFLICT = 'Пользователь уже существует';
 
 const MONGO_ADDRESS = 'mongodb://localhost:27017/moviesdb';
-const PORT_NUMBER = 3000;
+const PORT_NUMBER = 3001;
 const ALLOWED_CORS = [
   'http://localhost:3000',
-  'http://smfrtontendmesto.nomoredomains.rocks',
-  'https://smfrtontendmesto.nomoredomains.rocks',
+  'http://frontend-movies.nomoredomains.rocks',
+  'https://frontend-movies.nomoredomains.rocks',
 ];
 
 module.exports = {

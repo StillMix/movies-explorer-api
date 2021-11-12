@@ -27,11 +27,16 @@ const {
 const { PORT = PORT_NUMBER, BASE_PATH } = process.env;
 const app = express();
 
+app.use(cookieParser());
+app.use(express.json());
+
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
 mongoose.connect(MONGO_ADDRESS, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
 });
 
 app.use((req, res, next) => {
@@ -51,9 +56,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-app.use(cookieParser());
-app.use(express.json());
 
 app.use(requestLogger);
 
