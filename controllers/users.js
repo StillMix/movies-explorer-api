@@ -48,29 +48,23 @@ module.exports.patchInfoUser = (req, res, next) => {
     next(new BadRequest(BAD_REQUEST));
   }
 
-  User.findOne({ email }).then((user) => {
-    if (user) {
-      next(new Conflict(CONFLICT));
-    } else {
-      User.findByIdAndUpdate(req.user._id, { name, email }, {
-        new: true,
-        runValidators: true,
-        upsert: false,
-      })
-        .then((user) => {
-          if (!user) {
-            next(new NotFoundError(NOT_FOUND));
-          }
-          return res.send({ data: user });
-        })
-        .catch((err) => {
-          if (err.name === 'ValidationError') {
-            next(new BadRequest(BAD_REQUEST));
-          }
-          next(err);
-        });
-    }
-  });
+  User.findByIdAndUpdate(req.user._id, { name, email }, {
+    new: true,
+    runValidators: true,
+    upsert: false,
+  })
+    .then((user) => {
+      if (!user) {
+        next(new NotFoundError(NOT_FOUND));
+      }
+      return res.send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequest(BAD_REQUEST));
+      }
+      next(err);
+    });
 };
 
 module.exports.signOut = (req, res, next) => {
