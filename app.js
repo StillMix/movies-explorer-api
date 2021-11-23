@@ -3,6 +3,7 @@
 /* eslint-disable consistent-return */
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const dotenv = require('dotenv');
@@ -14,7 +15,7 @@ const errorHandler = require('./middlewares/errorHandler');
 
 dotenv.config();
 
-//const rateLimiter = require('./middlewares/rateLimit');
+// const rateLimiter = require('./middlewares/rateLimit');
 
 const {
   MONGO_ADDRESS,
@@ -39,29 +40,18 @@ mongoose.connect(MONGO_ADDRESS, {
   useFindAndModify: false,
 });
 
-app.use((req, res, next) => {
-  const { origin } = req.headers;
-  const { method } = req;
-  const requestHeaders = req.headers['access-control-request-headers'];
+const corsOptions = {
+  origin: ALLOWED_CORS,
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
 
-  if (ALLOWED_CORS.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Credentials', true);
-  }
-
-  if (method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-    res.header('Access-Control-Allow-Headers', requestHeaders);
-    return res.end();
-  }
-  next();
-});
+app.use(cors(corsOptions));
 
 app.use(requestLogger);
 
 app.use(helmet());
 
-//app.use(rateLimiter);
+// app.use(rateLimiter);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
