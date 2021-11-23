@@ -40,9 +40,16 @@ mongoose.connect(MONGO_ADDRESS, {
   useFindAndModify: false,
 });
 
+const whitelist = ALLOWED_CORS;
 const corsOptions = {
-  origin: ALLOWED_CORS,
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  origin: (origin, callback) => {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error());
+    }
+  },
+  methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
 };
 
 app.use(cors(corsOptions));
