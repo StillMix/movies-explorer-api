@@ -6,9 +6,9 @@ const CONFLICT = 'Пользователь уже существует';
 const MONGO_ADDRESS = 'mongodb://localhost:27017/moviesdb';
 const PORT_NUMBER = 3001;
 const ALLOWED_CORS = [
-  'http://localhost:3000',
   'http://frontend-movies.nomoredomains.rocks',
   'https://frontend-movies.nomoredomains.rocks',
+  'http://localhost:3000',
   'http://frontend-movies.nomoredomains.rocks/',
   'https://frontend-movies.nomoredomains.rocks/',
 ];

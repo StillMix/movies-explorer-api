@@ -14,7 +14,7 @@ const errorHandler = require('./middlewares/errorHandler');
 
 dotenv.config();
 
-const rateLimiter = require('./middlewares/rateLimit');
+//const rateLimiter = require('./middlewares/rateLimit');
 
 const {
   MONGO_ADDRESS,
@@ -61,7 +61,7 @@ app.use(requestLogger);
 
 app.use(helmet());
 
-app.use(rateLimiter);
+//app.use(rateLimiter);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
