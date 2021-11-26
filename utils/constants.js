@@ -9,8 +9,6 @@ const ALLOWED_CORS = [
   'http://frontend-movies.nomoredomains.rocks',
   'https://frontend-movies.nomoredomains.rocks',
   'http://localhost:3000',
-  'http://frontend-movies.nomoredomains.rocks/',
-  'https://frontend-movies.nomoredomains.rocks/',
 ];
 
 module.exports = {
