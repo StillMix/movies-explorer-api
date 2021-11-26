@@ -42,13 +42,9 @@ mongoose.connect(MONGO_ADDRESS, {
 
 const whitelist = ALLOWED_CORS;
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error());
-    }
-  },
+  origin: '*',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
   methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
 };
 
