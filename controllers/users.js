@@ -48,23 +48,29 @@ module.exports.patchInfoUser = (req, res, next) => {
     next(new BadRequest(BAD_REQUEST));
   }
 
-  User.findByIdAndUpdate(req.user._id, { name, email }, {
-    new: true,
-    runValidators: true,
-    upsert: false,
-  })
-    .then((user) => {
-      if (!user) {
-        next(new NotFoundError(NOT_FOUND));
-      }
-      return res.send({ data: user });
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequest(BAD_REQUEST));
-      }
-      next(err);
-    });
+  User.findOne({ email }).then((user) => {
+    if (user) {
+      next(new Conflict(CONFLICT));
+    } else {
+      User.findByIdAndUpdate(req.user._id, { name, email }, {
+        new: true,
+        runValidators: true,
+        upsert: false,
+      })
+        .then((user) => {
+          if (!user) {
+            next(new NotFoundError(NOT_FOUND));
+          }
+          return res.send({ data: user });
+        })
+        .catch((err) => {
+          if (err.name === 'ValidationError') {
+            next(new BadRequest(BAD_REQUEST));
+          }
+          next(err);
+        });
+    }
+  });
 };
 
 module.exports.signOut = (req, res, next) => {
@@ -115,7 +121,7 @@ module.exports.login = (req, res, next) => {
     next(new BadRequest(BAD_REQUEST));
   }
 
-  return User.findUserByCredentials(email, password, res, next)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       if (user) {
         const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
@@ -126,7 +132,9 @@ module.exports.login = (req, res, next) => {
         })
           .status(200).send({ user: user.toJSON() });
       }
-    }).catch((err) => {
+    })
+
+    .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequest(BAD_REQUEST));
       }
