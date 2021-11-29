@@ -74,9 +74,6 @@ module.exports.patchInfoUser = (req, res, next) => {
 };
 
 module.exports.signOut = (req, res, next) => {
-  if (!req.cookies.jwt) {
-    next(res.status(401).send({ message: 'Необходима авторизация' }));
-  }
   res.clearCookie('jwt').status(201).send({ message: 'Удачного дня))' });
 };
 
