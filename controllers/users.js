@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-multi-spaces */
 /* eslint-disable no-console */
@@ -74,7 +75,11 @@ module.exports.patchInfoUser = (req, res, next) => {
 };
 
 module.exports.signOut = (req, res, next) => {
-  res.clearCookie('jwt').status(201).send({ message: 'Удачного дня))' });
+  res.clearCookie('jwt', {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+  }).status(201).send({ message: 'Удачного дня))' });
 };
 
 // eslint-disable-next-line no-undef
